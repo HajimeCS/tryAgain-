@@ -1,0 +1,577 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direct Message ❤️</title>
+  
+  <style>
+    :root {
+      --ig-bg: #000000;
+      --ig-card-bg: #121212;
+      --ig-header-bg: #121212;
+      --ig-sent-bg: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+      --ig-received-bg: #262626;
+      --ig-text: #ffffff;
+      --ig-muted: #a8a8a8;
+      --ig-border: #262626;
+      --accent-pink: #ff3040;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--ig-bg);
+      color: var(--ig-text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .heart-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .heart-particle {
+      position: absolute;
+      color: rgba(255, 48, 64, 0.35);
+      animation: floatUp 8s infinite linear;
+      font-size: 18px;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(105vh) scale(0.6) rotate(0deg);
+        opacity: 0;
+      }
+      20% { opacity: 0.8; }
+      100% {
+        transform: translateY(-10vh) scale(1.2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .intro-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--ig-bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .intro-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .dm-intro-card {
+      background: var(--ig-card-bg);
+      border: 1px solid var(--ig-border);
+      border-radius: 20px;
+      padding: 32px 24px;
+      max-width: 380px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    .avatar-ring {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+    }
+
+    .dm-intro-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .dm-intro-sub {
+      color: var(--ig-muted);
+      font-size: 0.9rem;
+    }
+
+    .open-btn {
+      margin-top: 8px;
+      background: #0095f6;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .open-btn:hover {
+      background: #1877f2;
+      transform: scale(1.02);
+    }
+
+    .app-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      height: 92vh;
+      max-height: 850px;
+      background: var(--ig-bg);
+      border: 1px solid var(--ig-border);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    .ig-header {
+      background: var(--ig-header-bg);
+      border-bottom: 1px solid var(--ig-border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ig-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-icon {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433, #bc1888);
+      overflow: hidden;
+      flex: 0 0 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .username {
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status {
+      font-size: 0.75rem;
+      color: var(--ig-muted);
+    }
+
+    .ig-header-actions {
+      display: flex;
+      gap: 16px;
+      font-size: 20px;
+      color: var(--ig-text);
+    }
+
+    .chat-container {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .slideshow-wrapper {
+      width: 100%;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .message-bubble {
+      max-width: 82%;
+      padding: 12px 16px;
+      border-radius: 22px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      position: relative;
+      word-wrap: break-word;
+    }
+
+    .new-message {
+      animation: fadeIn 0.4s ease-out both;
+    }
+
+    .received {
+      align-self: flex-start;
+      background-color: var(--ig-received-bg);
+      color: var(--ig-text);
+      border-bottom-left-radius: 4px;
+    }
+
+    .sent {
+      align-self: flex-end;
+      background: var(--ig-sent-bg);
+      color: #ffffff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .reaction {
+      position: absolute;
+      bottom: -10px;
+      right: 12px;
+      background: var(--ig-card-bg);
+      border: 1px solid var(--ig-border);
+      border-radius: 12px;
+      padding: 2px 6px;
+      font-size: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .media-bubble {
+      max-width: 85%;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--ig-border);
+      background: #000;
+      align-self: flex-end;
+    }
+
+    .image-container, .video-container {
+      width: 100%;
+      height: 280px;
+      background-color: #000;
+    }
+
+    .image-container img, .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .audio-card {
+      background: var(--ig-received-bg);
+      border: 1px solid var(--ig-border);
+      border-radius: 16px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .music-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #f58529, #dd2a7b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .audio-details {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .audio-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .audio-artist {
+      font-size: 0.75rem;
+      color: var(--ig-muted);
+    }
+
+    .ig-input-bar {
+      padding: 12px 16px;
+      background: var(--ig-header-bg);
+      border-top: 1px solid var(--ig-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      background: var(--ig-received-bg);
+      border-radius: 24px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ig-muted);
+      font-size: 0.9rem;
+    }
+
+    .input-wrapper span {
+      flex: 1;
+    }
+
+    .action-icon {
+      font-size: 18px;
+      color: var(--ig-text);
+      cursor: pointer;
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="heart-bg" id="heartBg"></div>
+
+  <!-- Intro Screen Overlay -->
+  <div class="intro-overlay" id="introOverlay">
+    <div class="dm-intro-card">
+      <div class="avatar-ring">
+        <div class="avatar-inner">❤️</div>
+      </div>
+      <div class="dm-intro-title">New Direct Message</div>
+      <div class="dm-intro-sub">Someone sent you a memory collection</div>
+      <button class="open-btn" onclick="openLetter()">View Message</button>
+    </div>
+  </div>
+
+  <div class="app-card">
+    
+    <!-- Instagram Header -->
+    <div class="ig-header">
+      <div class="ig-header-left">
+        <span class="back-icon">‹</span>
+        <div class="user-avatar">
+          <img src="823849675_18060759551789141_7369798056666614705_n.jpg" alt="리나 profile picture">
+        </div>
+        <div class="user-info">
+          <div class="username">리나 <span style="color:#0095f6; font-size: 12px;">✔</span></div>
+          <div class="status">Active now</div>
+        </div>
+      </div>
+      <div class="ig-header-actions">
+        <span>📞</span>
+        <span>📹</span>
+      </div>
+    </div>
+
+    <div class="chat-container">
+      
+      <div class="slideshow-wrapper">
+        <div class="message-group" id="messageTimeline" aria-live="polite"></div>
+        <template id="videoSectionTemplate">
+          <div class="media-bubble">
+            <div class="video-container">
+              <video controls muted preload="metadata" playsinline>
+                <source src="video.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="audio-card">
+        <div class="music-icon">🎵</div>
+        <div class="audio-details">
+          <div class="audio-title">Some (feat. Lil Boi)</div>
+          <div class="audio-artist">SOYOU, Junggigo, lIlBOI</div>
+        </div>
+        <span style="color: var(--accent-pink); font-size: 18px;">❤️</span>
+      </div>
+
+      <audio id="bgMusic" loop preload="auto">
+        <source src="song.mp3" type="audio/mp3">
+      </audio>
+
+    </div>
+
+    <!-- Instagram Bottom Input Bar -->
+    <div class="ig-input-bar">
+      <div class="input-wrapper">
+        <span>Message...</span>
+      </div>
+      <span class="action-icon">🎙️</span>
+      <span class="action-icon">🖼️</span>
+      <span class="action-icon">❤️</span>
+    </div>
+
+  </div>
+
+  <script>
+    const audio = document.getElementById('bgMusic');
+    const overlay = document.getElementById('introOverlay');
+    const messageTimeline = document.getElementById('messageTimeline');
+    const videoSectionTemplate = document.getElementById('videoSectionTemplate');
+    const conversationMessages = [
+      { text: 'Hey, do you remember what day it is?', side: 'received' },
+      { text: "Of Course I do! It's all about you today.😏", side: 'sent' },
+      { text: 'It\'s national girlfriends day!', side: 'sent' },
+      { text: 'Ehhh?, We aren\'t even officially together yet🙄', side: 'received' },
+      { text: 'Not yet, It\'s not even been very long since we met', side: 'sent' },
+      { text: "but I wanna show you the appreciation that you deserve.🤗", side: 'sent' },
+      { text: 'I know it\'s not much, but I hope you like it.😁', side: 'sent' },
+      { text: 'I\'ll be the judge of that', side: 'received' },
+      { text: 'Don\'t laugh alright', side: 'sent' }
+    ];
+    const followUpMessages = [
+      { text: 'you\'re so weird 😂😂😂 ', side: 'received' },
+      { text: 'I told not to laugh', side: 'sent' },
+      { text: 'I hope I made you smile ❤️, Happy National Girlfriends Day! ', side: 'sent' }
+    ];
+    let revealedMessages = 0;
+    let videoRevealed = false;
+
+    function scrollChatToLatest() {
+      const chatContainer = document.querySelector('.chat-container');
+      chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+    }
+
+    function appendMessage(message) {
+      const bubble = document.createElement('div');
+      bubble.className = `message-bubble ${message.side} new-message`;
+      bubble.textContent = message.text;
+      messageTimeline.appendChild(bubble);
+      scrollChatToLatest();
+    }
+
+    function revealTimeline() {
+      while (revealedMessages < conversationMessages.length && audio.currentTime >= (revealedMessages + 1) * 5) {
+        appendMessage(conversationMessages[revealedMessages]);
+        revealedMessages++;
+      }
+
+      if (!videoRevealed && revealedMessages === conversationMessages.length && audio.currentTime >= 45) {
+        videoRevealed = true;
+        const videoContent = videoSectionTemplate.content.cloneNode(true);
+        const video = videoContent.querySelector('video');
+        videoContent.querySelectorAll('.media-bubble').forEach(element => {
+          element.classList.add('new-message');
+        });
+        messageTimeline.appendChild(videoContent);
+        video.addEventListener('ended', () => {
+          followUpMessages.forEach((message, index) => {
+            setTimeout(() => appendMessage(message), (index + 1) * 5000);
+          });
+        }, { once: true });
+        video.play().catch(err => {
+          console.log("Video autoplay prevented:", err);
+        });
+        scrollChatToLatest();
+      }
+    }
+
+    function openLetter() {
+      overlay.classList.add('hidden');
+
+      if (audio) {
+        audio.addEventListener('timeupdate', revealTimeline);
+        audio.play().catch(err => {
+          console.log("Audio autoplay prevented:", err);
+        });
+      }
+    }
+
+    document.addEventListener('keydown', (e) => e.preventDefault());
+
+    function createHearts() {
+      const container = document.getElementById('heartBg');
+      const hearts = ['❤️', '💖', '💕', '🌸', '✨'];
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-particle';
+        heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDelay = (Math.random() * 8) + 's';
+        heart.style.animationDuration = (6 + Math.random() * 6) + 's';
+        container.appendChild(heart);
+      }
+    }
+
+    createHearts();
+  </script>
+</body>
